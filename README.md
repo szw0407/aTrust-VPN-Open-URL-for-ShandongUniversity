@@ -15,4 +15,4 @@ login
 
 Then run the script. Enjoy using!
 
-If you have a GitHub Account, give me a star if you like it.
+If you have a GitHub Account, please give me a star if you like it, thanks.
