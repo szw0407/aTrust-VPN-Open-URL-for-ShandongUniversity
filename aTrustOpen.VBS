@@ -20,7 +20,7 @@ else
         l=l&"-s.atrust.sdu.edu.cn:81"
 
     else
-        a=right (a,len(a)-7)
+        a=right(a,len(a)-7)
         k=instr(a,"/")
         l=left(a,k-1)
         r=right(a,len(a)-len(l))
