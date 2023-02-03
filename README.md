@@ -14,3 +14,5 @@ open https://tvpn.sdu.edu.cn/portal/#!/login
 login
 
 Then run the script. Enjoy using!
+
+If you have a GitHub Account, give me a star if you like it.
