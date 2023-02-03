@@ -20,6 +20,7 @@ else
         l=l&"-s.atrust.sdu.edu.cn:81"
 
     else
+        a=right (a,len(a)_7)
         k=instr(a,"/")
         l=left(a,k-1)
         r=right(a,len(a)-len(l))
@@ -30,5 +31,5 @@ else
 end if
 ret="https://"&l&r
 Set Wsh = WScript.CreateObject("WScript.Shell")
-msgbox ret
+'msgbox ret
 Wsh.Run ret
