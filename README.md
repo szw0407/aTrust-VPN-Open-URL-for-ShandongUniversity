@@ -11,8 +11,10 @@ open taskmgr.exe and run the aTrustService
 
 open https://tvpn.sdu.edu.cn/portal/#!/login
 
-login
+login.
 
-Then run the script. Enjoy using!
+Download the code and double-click to run the VBS script.
+
+Enjoy using!
 
 If you have a GitHub Account, please give me a star if you like it, thanks.
