@@ -18,6 +18,8 @@ If the login is successful, the browser will show the aTrust dashboard, which is
 
 Now you can use this script. Download the code from here or Release page and double-click to run the VBS script.
 
+You can try opening `https://ip8.com`. Your IP address should be in Jinan, China.
+
 Enjoy using!
 
 ## Other things
