@@ -34,9 +34,9 @@ DO make sure the VPN service is working. YOU MUST INSTALL aTrust client and run 
 
 其他事项请查看更新字段
 
-If you do not want to use the GUI or have other problems:
+If you do not want to use the GUI or have other problems (For users running Windows):
 
-如果你不想手动打开主程序，或者打开主程序后还是提示“服务未启动”，使用这个办法：
+如果你不想手动打开主程序，或者打开主程序后还是提示“服务未启动”，使用这个办法（这部分内容仅适用于Windows）：
 
 open `taskmgr.exe` or `services.msc` and run the aTrustService
 
