@@ -43,6 +43,19 @@ If you are using Linux or if you can use Docker Desktop on Windows, you may use 
 docker run --rm --device /dev/net/tun --cap-add NET_ADMIN -ti -e PASSWORD=xxxx -e URLWIN=1 -v $HOME/.atrust-data:/root -p 127.0.0.1:5901:5901 -p 127.0.0.1:1080:1080 -p 127.0.0.1:8888:8888 -p 127.0.0.1:54631:54631 hagb/docker-atrust:vncless
 ```
 
+对于这个命令里面的一些细节的解释：
+
+- NET_ADMIN 权限是必须的，因为aTrust需要创建虚拟网卡。
+- PASSWORD 这个东西是对应于`docker-atrust:latest`镜像的环境变量，其提供了一个VNC连接查看aTrust主程序的GUI。但是这里用不到，所以使用了`docker-atrust:vncless`镜像，这个参数也没有了什么实际的价值。
+- URLWIN 这个环境变量也是用在VNC里面，用来弹出个框显示登入的网址的，但是这里用不到，所以也没有什么实际的价值。
+- $HOME/.atrust-data 这个是挂载的目录，用来保存aTrust的配置文件。
+- 5901端口是VNC的端口，可以用VNC查看aTrust的主程序界面。这里其实也用不上
+- 1080端口是SOCKS5代理端口，可以用来代理浏览器访问网站。
+- 8888端口是HTTP代理端口，可以用来代理浏览器访问网站。
+- 54631端口是aTrust的控制端口，这个东西是必须的，不然无法让网页和aTrust主程序通信。
+
+如果你**只需要访问一些网页**这种最简单的功能，你**只需要**54631这一个端口即可！不必配置任何代理，因为网页是通过深信服**私有的协议**和aTrust主程序通信的，不需要代理就能打开这些网页，只需要而且**只能**使用aTrust主程序或者这个程序改写网址（URL）而打开，因为网页访问通过隧道似乎就是通过改写的URL实现的，改写的URL指向aTrust服务器，这个服务器会处理所有的请求。aTrust不会主动地代理所有的连接，对于任何不是直接指向山东大学的请求，他不会产生任何影响。但是对于建立TCP/UDP连接，接入山东大学的内网IP地址，就需要使用代理端口。具体的行为多试试就能大概了解了。
+
 > 如果你已经选择并启动了Docker容器，你可以直接跳到“登入”部分。
 
 Otherwise you need to install the aTrust VPN client from the official website. You can download it from [here](https://vpn.sdu.edu.cn/) at the top right corner. Note that for Linux users, the website only offers UOS and Kylin versions. You may need to use bwrap to load the necessary libraries from the UOS or Kylin Linux and then unpack the deb package.
