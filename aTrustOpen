@@ -1,0 +1,91 @@
+#! /usr/bin/python3
+
+import sys
+import webbrowser
+import re
+import os
+
+def pre_process_url(url: str) -> (str, bool):
+    if url.startswith("http://"):
+        return url[7:], False
+    elif url.startswith("https://"):
+        return url[8:], True
+    # check other protocols
+    elif re.match(r"^[a-zA-Z]+://", url):
+        raise ValueError("Unsupported protocol")
+    else:
+        # Warning: use http by default. 
+        sys.stderr.write("Warning: use http by default\n")
+        return url, False
+
+def modify_url(url: str, https: bool = False) -> str:
+    k = url.find("/")
+    if k > 0:
+        left = url[:k]
+        right = url[k:]
+    else:
+        left = url
+        right = ""
+    left = left.replace('.', '-')
+    if https:
+        left = f"https://{left}-s"
+    else:
+        left = f"https://{left}"
+    left += ".atrust.sdu.edu.cn:81"
+    return left + right
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: %s <URL>" % sys.argv[0])
+        sys.stderr.write("Error: Invalid number of arguments\n")
+        print("For more information, use: %s --help" % sys.argv[0])
+
+    elif sys.argv[1] == "--help" or sys.argv[1] == "-h":
+        print(
+f"""This script is used to open a URL in the default browser.
+              
+Usage: {sys.argv[0]} <URL>
+
+Example:
+    {sys.argv[0]} https://www.sdu.edu.cn
+
+Options:
+    -h, --help    Display this help message and exit
+    -v, --version Display the version of the script and exit
+    -r, --raw     Just return the modified URL to the standard output
+    -b, --browser Use the given browser or program to open the URL
+    --login       Open the URL to login to the aTrust VPN on web
+
+More examples:
+    {sys.argv[0]} -b /usr/bin/firefox https://www.sdu.edu.cn
+    {sys.argv[0]} -b w3m https://www.sdu.edu.cn
+    {sys.argv[0]} -b \"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --no-sandbox https://www.sdu.edu.cn
+"""
+)
+
+    elif sys.argv[1] == "--version" or sys.argv[1] == "-v":
+        print("aTrust URL Opener v1.0")
+
+    elif sys.argv[1] == "--login":
+        webbrowser.open("https://vpn.sdu.edu.cn")
+
+    elif sys.argv[1] == "--raw" or sys.argv[1] == "-r":
+        url, https = pre_process_url(sys.argv[2])
+        print(modify_url(url, https))
+
+    elif sys.argv[1] == "--browser" or sys.argv[1] == "-b":
+        browser_with_args = sys.argv[2:-1]
+        # if the PATH has space, it should be quoted
+        path = browser_with_args[0]
+        if path.find(" ") > 0:
+            browser_with_args[0] = "\"" + path + "\""
+        url, https = pre_process_url(sys.argv[-1])
+        os.system(" ".join(browser_with_args) + " " + modify_url(url, https))
+
+    elif sys.argv[1].startswith("-"):
+        raise ValueError("Invalid option")
+    else:
+        url, https = pre_process_url(sys.argv[1])
+        print(modify_url(url, https))
+        webbrowser.open(modify_url(url, https))

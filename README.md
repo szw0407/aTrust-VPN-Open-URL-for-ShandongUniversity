@@ -4,49 +4,64 @@ The SDU new VPN provided by aTrust is very hard to use with lots of bugs. This s
 
 山东大学新版aTrust VPN太难用，还有不少的问题。本脚本旨在让它用起来更方便。
 
+这个脚本的初衷是，深信服的那个软件到处拉屎，把文件夹都搞得乱七八糟，还据说会有后门、监听；而且对于 Linux 没有提供任何常见的发行版的支持，难以使用；此外，如果按照官方的使用方法，必须在那个软件界面里面打开山东大学图书馆的网站，从山大图书馆里面索引转到对应的数据库，对于访问某个特定的链接可以说是极不方便，于是本人就希望找一个能不太麻烦地使用它的方式。
+
 ## 更新
 
-**更新**：本人正在着手将aTrust封装在Docker或者其他容器，然后跑在服务端。现在本人有以下几个想法
+**更新**：目前已经测试过使用aTrust的docker镜像，可以在Windows上使用Docker Desktop运行，也理论上可以在Linux上运行。运行后，可以直接从网页登入，而不需要打开aTrust主程序的GUI。有可能会偶尔出现登录网页很长时间都无法检测到客户端的情况，但是重新打开网页就会发现其实已经登录成功了。
 
-- 对于自己有能力获取到服务器的用户，提供一站式的配置方案，将服务器作为代理服务器配置完成后，直接在系统中将代理服务器设置为自己的服务器即可。
-- 对于自己没有能力获取到服务器，但是使用Linux或者在Windows上安装了Docker并可以正常使用的用户，我们提供本地的配置方法。当然由于Docker在本地运行，可能会占用一些资源，尤其是Windows上，所以本人并不特别希望如此操作。当然，如果使用podman或者其他容器，可能后续也会做这方面的配置脚本，但是个人时间有限，等有需求再说吧······
-- 如果你很不幸不想或者不会运行Docker也无法得到服务器，我会继续维护这个最简单的脚本（实际上我觉得已经够用了，有Enhancement方面的需求提issue，我且看着能不能做）
-- 优化GUI，把上述的几个功能全部集合起来，做一个像样的程序出来
-- 把代理的逻辑写到规则代理软件（比如Clash）的配置文件中
+此外，据说 Windows 已经移除了 VBScript，所以这个脚本可能在未来会失效。我已经使用 Python 重新实现了这个脚本，运行方法：
 
-今天偶然看到了已经有人号称能把aTrust部署进Docker，我就意识到，现在能整的活已经越来越多了。
+```bash
+# for Linux
+chmod +x aTrustOpen  # only need to run once, make the script executable
+./aTrustOpen https://ip8.com
+```
+
+```powershell
+# for Windows
+python aTrustOpen.py https://ip8.com
+```
 
 当然了，我其实更希望有大佬刚好路过，帮助我把这个项目做得更好。上面的饼画的很大，实际上我已经做的、能做的很有限，所有东西都在现学。欢迎到本文末加群。
 
 ## 功能 Features
 
-    想要直接打开通知的网址，但是得到的只是一个403 Forbidden？
-    想要直接访问同学转发的论文链接，但是IP不在学校，无法打开全文？
-    想要得到一个“山东济南教育网”的IP属地，隐藏自己的真实所在地？
+> 想要直接打开通知的网址，但是得到的只是一个403 Forbidden？
+> 想要直接访问同学转发的论文链接，但是IP不在学校，无法打开全文？
+> 想要得到一个“山东济南教育网”的IP属地，隐藏自己的真实所在地？
 
 以上需求，本脚本可以比较容易满足。但是由于本人时间精力非常有限，这个脚本只能很粗糙的使用，但是给出了思路。欢迎Fork和Pull Request。
 
 ## 预备工作 BEFORE YOU RUN THE SCRIPT
 
-DO make sure the VPN service is working. YOU MUST INSTALL aTrust client and run it.
+If you are using Linux or if you can use Docker Desktop on Windows, you may use the commands below to start the aTrust in Docker. Thanks to [docker-easyconnect](https://github.com/docker-easyconnect/docker-easyconnect) for the container image.
 
-一定要**确保**你正确安装了aTrust客户端。本脚本只是改了一下具体的使用方式，没有涉及底层原理实现。你必须正确安装，并保证对应的“服务”在工作。
+如果你使用Linux或者可以在Windows上使用Docker Desktop，你可以使用以下命令来启动Docker中的aTrust。感谢[docker-easyconnect](https://github.com/docker-easyconnect/docker-easyconnect)提供的容器镜像。
 
-其他事项请查看更新字段
+```bash
+docker run --rm --device /dev/net/tun --cap-add NET_ADMIN -ti -e PASSWORD=xxxx -e URLWIN=1 -v $HOME/.atrust-data:/root -p 127.0.0.1:5901:5901 -p 127.0.0.1:1080:1080 -p 127.0.0.1:8888:8888 -p 127.0.0.1:54631:54631 hagb/docker-atrust:vncless
+```
+
+> 如果你已经选择并启动了Docker容器，你可以直接跳到“登入”部分。
+
+Otherwise you need to install the aTrust VPN client from the official website. You can download it from [here](https://vpn.sdu.edu.cn/) at the top right corner. Note that for Linux users, the website only offers UOS and Kylin versions. You may need to use bwrap to load the necessary libraries from the UOS or Kylin Linux and then unpack the deb package.
+
+否则，你需要从官方网站下载aTrust VPN客户端。你可以在[这里](https://vpn.sdu.edu.cn/)的右上角找到下载链接。注意，对于Linux用户，官网只提供了UOS和麒麟版本。你可能需要使用bwrap加载UOS或者麒麟Linux中的必要库，然后解压deb包。
 
 If you do not want to use the GUI or have other problems (For users running Windows):
 
 如果你不想手动打开主程序，或者打开主程序后还是提示“服务未启动”，使用这个办法（这部分内容仅适用于Windows）：
 
-open `taskmgr.exe` or `services.msc` and run the aTrustService
+Open `taskmgr.exe` or `services.msc` and run the aTrustService
 
 打开“任务管理器”或者“服务”，找到一个叫做`aTrustService`的东西，运行它。如果找不到，那就重装aTrust。
 
-open https://vpn.sdu.edu.cn/portal/#!/login
+## 登入 Login
 
-登录的网址就是上面的那个地址，登录可能会花一段时间才能初始化成功，等等就好了。网络状况很差的情况下，甚至可能要花几分钟甚至十几分钟。如果等了大概2分钟还是在转圈，可以试试关掉这个网页，大概率已经登录成功。此时你的电脑托盘区的aTrust图标会从灰色变成绿色。反正他是绿的就对了。
+Open `https://vpn.sdu.edu.cn/portal/#!/login` and login in the web browser.
 
-login.
+浏览器[打开这个](https://vpn.sdu.edu.cn/portal/#!/login)，登录。可能会花一段时间才能初始化成功，等等就好了。本人最长一次等了超过10分钟还在转圈（深信服，真有你的）。如果等了大概2分钟还是在转圈，其实大概率已经登录成功，就是网页前端出了点问题，可以不管了。如果使用aTrust程序，此时你的电脑托盘区的aTrust图标会从灰色变成绿色。反正他是绿的就对了。
 
 If the login is successful, the browser will show the aTrust dashboard, which is in fact, hard to use.
 
@@ -61,6 +76,8 @@ Now you can use this script. Download the code from here or Release page and dou
 You can try opening `https://ip8.com`. Your IP address should be in Jinan, China.
 
 如果你想测试一下代理访问的IP，你可以打开`https://ip8.com`或者别的什么查询IP地址的网页，看看你的IP属地是不是山东济南教育网。
+
+对于那个 Python 实现的脚本，需要在命令行使用，细节见上文。
 
 Enjoy using!
 
