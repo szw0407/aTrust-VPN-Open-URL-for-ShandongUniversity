@@ -37,6 +37,8 @@ python aTrustOpen.py https://ip8.com
 
 ## 预备工作 BEFORE YOU RUN THE SCRIPT
 
+对于普通Windows/MacOS/iOS/安卓/UOS/麒麟等**国内常见操作系统**的用户来说，请直接看到**否则**部分，和Docker有关的内容是给高级用户（如常见Linux使用者，或者那些就是无法使用aTrust的人） For users of Windows, MacOS, iOS, Android, UOS, Kylin or other operate systems common in China, please refer to the **Otherwise** part. The content related to Docker is for advanced users (e.g., common Linux users, or those who just can't use aTrust). 
+
 If you are using Linux or if you can use Docker Desktop on Windows, you may use the commands below to start the aTrust in Docker. Thanks to [docker-easyconnect](https://github.com/docker-easyconnect/docker-easyconnect) for the container image.
 
 如果你使用Linux或者可以在Windows上使用Docker Desktop，你可以使用以下命令来启动Docker中的aTrust。感谢[docker-easyconnect](https://github.com/docker-easyconnect/docker-easyconnect)提供的容器镜像。
@@ -60,9 +62,9 @@ docker run --rm --device /dev/net/tun --cap-add NET_ADMIN -ti -e PASSWORD=xxxx -
 
 > 如果你已经选择并启动了Docker容器，你可以直接跳到“登入”部分。
 
-Otherwise you need to install the aTrust VPN client from the official website. You can download it from [here](https://vpn.sdu.edu.cn/) at the top right corner. Note that for Linux users, the website only offers UOS and Kylin versions. You may need to use bwrap to load the necessary libraries from the UOS or Kylin Linux and then unpack the deb package.
+**Otherwise** you need to install the aTrust VPN client from the official website. You can download it from [here](https://vpn.sdu.edu.cn/) at the top right corner. Note that for Linux users, the website only offers UOS and Kylin versions. You may need to use bwrap to load the necessary libraries from the UOS or Kylin Linux and then unpack the deb package.
 
-否则，你需要从官方网站下载aTrust VPN客户端。你可以在[这里](https://vpn.sdu.edu.cn/)的右上角找到下载链接。注意，对于Linux用户，官网只提供了UOS和麒麟版本。你可能需要使用bwrap加载UOS或者麒麟Linux中的必要库，然后解压deb包。
+**否则**，你需要从官方网站下载aTrust VPN客户端。你可以在[这里](https://vpn.sdu.edu.cn/)的右上角找到下载链接。注意，对于Linux用户，官网只提供了UOS和麒麟版本。你可能需要使用bwrap加载UOS或者麒麟Linux中的必要库，然后解压deb包。
 
 If you do not want to use the GUI or have other problems (For users running Windows):
 
