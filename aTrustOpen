@@ -8,15 +8,14 @@ import os
 def pre_process_url(url: str) -> (str, bool):
     if url.startswith("http://"):
         return url[7:], False
-    elif url.startswith("https://"):
+    if url.startswith("https://"):
         return url[8:], True
     # check other protocols
-    elif re.match(r"^[a-zA-Z]+://", url):
+    if re.match(r"^[a-zA-Z]+://", url):
         raise ValueError("Unsupported protocol")
-    else:
-        # Warning: use http by default. 
-        sys.stderr.write("Warning: use http by default\n")
-        return url, False
+    # Warning: use http by default. 
+    sys.stderr.write("Warning: use http by default\n")
+    return url, False
 
 def modify_url(url: str, https: bool = False) -> str:
     k = url.find("/")

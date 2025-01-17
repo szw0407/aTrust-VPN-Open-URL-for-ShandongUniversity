@@ -24,7 +24,7 @@ chmod +x aTrustOpen  # only need to run once, make the script executable
 
 ```powershell
 # for Windows
-python aTrustOpen.py https://ip8.com
+python aTrustOpen https://ip8.com
 ```
 
 当然了，我其实更希望有大佬刚好路过，帮助我把这个项目做得更好。上面的饼画的很大，实际上我已经做的、能做的很有限，所有东西都在现学。欢迎到本文末加群。
