@@ -4,6 +4,7 @@ import sys
 import webbrowser
 import re
 import os
+import argparse
 
 def pre_process_url(url: str) -> (str, bool):
     if url.startswith("http://"):
@@ -33,21 +34,13 @@ def modify_url(url: str, https: bool = False) -> str:
     left += ".atrust.sdu.edu.cn:81"
     return left + right
 
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: %s <URL>" % sys.argv[0])
-        sys.stderr.write("Error: Invalid number of arguments\n")
-        print("For more information, use: %s --help" % sys.argv[0])
-
-    elif sys.argv[1] == "--help" or sys.argv[1] == "-h":
-        print(
-f"""This script is used to open a URL in the default browser.
-              
-Usage: {sys.argv[0]} <URL>
+def main():
+    parser = argparse.ArgumentParser(
+        description="Open aTrust VPN URL for Shandong University in the browser.",
+        usage="""%(prog)s [options] <URL>
 
 Example:
-    {sys.argv[0]} https://www.sdu.edu.cn
+    %(prog)s https://www.sdu.edu.cn
 
 Options:
     -h, --help    Display this help message and exit
@@ -57,34 +50,60 @@ Options:
     --login       Open the URL to login to the aTrust VPN on web
 
 More examples:
-    {sys.argv[0]} -b /usr/bin/firefox https://www.sdu.edu.cn
-    {sys.argv[0]} -b w3m https://www.sdu.edu.cn
-    {sys.argv[0]} -b \"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --no-sandbox https://www.sdu.edu.cn
+    %(prog)s -b /usr/bin/firefox https://www.sdu.edu.cn
+    %(prog)s -b w3m https://www.sdu.edu.cn
+    %(prog)s -b "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe" --no-sandbox https://www.sdu.edu.cn
 """
-)
+    )
+    parser.add_argument("url", nargs="?", help="The URL to open")
+    parser.add_argument("-v", "--version", action="store_true", help="Show version and exit")
+    parser.add_argument("-r", "--raw", action="store_true", help="Just output the modified URL")
+    parser.add_argument("-b", "--browser", nargs="+", help="Browser/program to use to open the URL")
+    parser.add_argument("--login", action="store_true", help="Open login page for aTrust VPN")
 
-    elif sys.argv[1] == "--version" or sys.argv[1] == "-v":
+    args = parser.parse_args()
+
+    if args.version:
         print("aTrust URL Opener v1.0")
+        sys.exit(0)
 
-    elif sys.argv[1] == "--login":
+    if args.login:
         webbrowser.open("https://vpn.sdu.edu.cn")
+        sys.exit(0)
 
-    elif sys.argv[1] == "--raw" or sys.argv[1] == "-r":
-        url, https = pre_process_url(sys.argv[2])
+    if args.url is None and not args.browser:
+        parser.print_usage()
+        sys.stderr.write("Error: Invalid number of arguments\n")
+        print("For more information, use: %s --help" % sys.argv[0])
+        sys.exit(1)
+
+    if args.raw:
+        if not args.url:
+            sys.stderr.write("Error: No URL provided for --raw\n")
+            sys.exit(1)
+        url, https = pre_process_url(args.url)
         print(modify_url(url, https))
+        sys.exit(0)
 
-    elif sys.argv[1] == "--browser" or sys.argv[1] == "-b":
-        browser_with_args = sys.argv[2:-1]
-        # if the PATH has space, it should be quoted
+    if args.browser:
+        if not args.url:
+            sys.stderr.write("Error: No URL provided for --browser\n")
+            sys.exit(1)
+        browser_with_args = args.browser
         path = browser_with_args[0]
-        if path.find(" ") > 0:
+        if " " in path:
             browser_with_args[0] = "\"" + path + "\""
-        url, https = pre_process_url(sys.argv[-1])
+        url, https = pre_process_url(args.url)
         os.system(" ".join(browser_with_args) + " " + modify_url(url, https))
+        sys.exit(0)
 
-    elif sys.argv[1].startswith("-"):
-        raise ValueError("Invalid option")
-    else:
-        url, https = pre_process_url(sys.argv[1])
+    if args.url:
+        url, https = pre_process_url(args.url)
         print(modify_url(url, https))
         webbrowser.open(modify_url(url, https))
+        sys.exit(0)
+
+    parser.print_help()
+
+if __name__ == "__main__":
+    main()
